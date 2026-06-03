@@ -2012,7 +2012,7 @@
       <label class="form-label">Project Brief</label>
       <textarea class="form-input" placeholder="Tell me about your project..."></textarea>
     </div>
-    <button class="submit-btn" onclick="showNotif('Message sent — I\'ll be in touch soon.')">
+    <button class="submit-btn" onclick="sendHireMeEmail()">
       <span>Send Message →</span>
     </button>
   </div>
@@ -2101,6 +2101,18 @@
 </div>
 
 <script>
+  function sendHireMeEmail() {
+    const inputs = document.querySelectorAll('.contact-form .form-input');
+    const name = inputs[0].value.trim();
+    const contact = inputs[1].value.trim();
+    const brief = inputs[2].value.trim();
+    if (!name || !contact || !brief) { showNotif('Please fill in all fields.'); return; }
+    const subject = encodeURIComponent('Hire Me — ' + name);
+    const body = encodeURIComponent('Name: ' + name + '\nDiscord / Email: ' + contact + '\n\nProject Brief:\n' + brief);
+    window.location.href = 'mailto:shahbhavya481@gmail.com?subject=' + subject + '&body=' + body;
+    showNotif('Opening your email client…');
+  }
+
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
@@ -2216,15 +2228,7 @@
       const displayTitle = data.title || slot.title;
       const lt = makeLowerThird(slot.id + 1, displayTitle, true, slot.client);
 
-      // Thumbnail upload button
-      const thumbBtn = makeThumbUploadBtn(file => {
-        const url = URL.createObjectURL(file);
-        videoSrcs[slot.id].customThumb = url;
-        img.src = url;
-        showNotif('Thumbnail updated');
-      });
-
-      tile.append(bt, thumb, pb, lt, thumbBtn);
+      tile.append(bt, thumb, pb, lt);
 
     } else if (data && data.type === 'file') {
       // ── Local video tile ──
@@ -2245,14 +2249,7 @@
 
       const lt = makeLowerThird(slot.id + 1, data.title || slot.title, false, slot.client);
 
-      const thumbBtn = makeThumbUploadBtn(file => {
-        const url = URL.createObjectURL(file);
-        videoSrcs[slot.id].customThumb = url;
-        vid.poster = url;
-        showNotif('Thumbnail updated');
-      });
-
-      tile.append(bt, vid, pb, lt, thumbBtn);
+      tile.append(bt, vid, pb, lt);
 
     } else {
       // ── Empty tile ──
